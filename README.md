@@ -22,3 +22,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser (i
 To run tests use:
   * npm test
  
+ ## Features
+
+* In home page it will **list of people with page sizes of 50 in a responsive grid**. It will load more when you scroll down.
+
+* You can click on cards to see detailed **location** information of a person.
+
+* You can perform **search** at top navigation bar. Pagination will not work during search (due to API limitations).
+
+* From navigation, you can also open Settings page and select **Nationality** filter. It will update the state and go back to load new data with selected Nationality. (without refreshing the page)
