@@ -187,7 +187,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
                     loadMore={loadMore}
                     dataSource={filteredList}
                     renderItem={(item: ListItem) => (
-                        <List.Item>
+                        <List.Item className="listItem">
                             <Popover
                                 content={(
                                     <ul>
