@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    List, Button, Skeleton, Card, Avatar,
+    List, Button, Skeleton, Card, Avatar, Popover,
 } from 'antd';
 import { observer } from 'mobx-react';
 
@@ -21,10 +21,12 @@ interface ComponentState {
     loading: boolean;
     data: ListItem[];
     page: number;
+    lastNationality: string;
 }
 
 interface ListItem {
     loading: boolean;
+    popoverVisible: boolean;
     name: {
         title: string;
         first: string;
@@ -42,6 +44,10 @@ interface ListItem {
         thumbnail: string;
     },
     location: {
+        street: {
+            number: number;
+            name: string;
+        },
         city: string,
         state: string,
         country: string,
@@ -68,6 +74,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
         super(props);
 
         this.state = {
+            lastNationality: AppData.nationality,
             loading: true,
             data: new Array<ListItem>(),
             list: new Array<ListItem>(),
@@ -81,8 +88,16 @@ export default class ContactList extends React.Component<ComponentProps, Compone
 
     getData = (callback: CallbackType) => {
         const { count } = this.props;
-        const { page } = this.state;
-        this.dataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,location,nat,phone,cell,picture,login&page=${page}&seed=burak`;
+        const { page, lastNationality } = this.state;
+        const nat = AppData.nationality;
+
+        if (nat !== lastNationality) {
+            this.setState({ page: 1, lastNationality: nat });
+            this.getData(callback);
+            return;
+        }
+
+        this.dataUrl = `https://randomuser.me/api/?results=${count}&nat=${nat}&inc=name,gender,email,location,nat,phone,cell,picture,login&page=${page}&seed=burak`;
 
         axios.get(this.dataUrl)
             .then((res) => {
@@ -93,7 +108,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
     onLoadMore = () => {
         const { count } = this.props;
         const newItems = [...new Array(count)].map(() => ({
-            loading: true, name: {}, picture: {}, location: {}, login: {},
+            loading: true, name: {}, picture: {}, location: { street: {} }, login: {},
         } as ListItem));
         const { data, page } = this.state;
         this.setState({
@@ -173,23 +188,63 @@ export default class ContactList extends React.Component<ComponentProps, Compone
                     dataSource={filteredList}
                     renderItem={(item: ListItem) => (
                         <List.Item>
-                            <Skeleton avatar title={false} loading={item.loading} active>
-                                <Card
-                                    actions={[
-                                        <div>
-                                            <UserOutlined style={{ marginRight: 5 }} />
-                                            {AppData.searchStr}
-                                            {item.login.username}
-                                        </div>,
-                                    ]}
-                                >
-                                    <Meta
-                                        avatar={<Avatar src={item.picture.thumbnail} />}
-                                        title={`${item.name.title}. ${item.name.first} ${item.name.last}`}
-                                        description={item.email}
-                                    />
-                                </Card>
-                            </Skeleton>
+                            <Popover
+                                content={(
+                                    <ul>
+                                        <li>
+                                            <b>Country: </b>
+                                            {item.location.country}
+                                        </li>
+                                        <li>
+                                            <b>City: </b>
+                                            {item.location.city}
+                                        </li>
+                                        <li>
+                                            <b>State: </b>
+                                            {item.location.state}
+                                        </li>
+                                        <li>
+                                            <b>Street: </b>
+                                            {`${item.location.street.number} - ${item.location.street.name}`}
+                                        </li>
+                                        <li>
+                                            <b>Post code: </b>
+                                            {item.location.postcode}
+                                        </li>
+                                        <li>
+                                            <b>Phone: </b>
+                                            {item.phone}
+                                        </li>
+                                        <li>
+                                            <b>Cell: </b>
+                                            {item.cell}
+                                        </li>
+                                    </ul>
+                                )}
+                                title="Location Info"
+                                trigger="click"
+                                visible={item.popoverVisible}
+                            >
+                                <a href="#/">
+                                    <Skeleton avatar title={false} loading={item.loading} active>
+                                        <Card
+                                            actions={[
+                                                <div>
+                                                    <UserOutlined style={{ marginRight: 5 }} />
+                                                    {AppData.searchStr}
+                                                    {item.login.username}
+                                                </div>,
+                                            ]}
+                                        >
+                                            <Meta
+                                                avatar={<Avatar src={item.picture.thumbnail} />}
+                                                title={`${item.name.title}. ${item.name.first} ${item.name.last}`}
+                                                description={item.email}
+                                            />
+                                        </Card>
+                                    </Skeleton>
+                                </a>
+                            </Popover>
                         </List.Item>
                     )}
                 />

@@ -4,12 +4,18 @@ import { makeAutoObservable } from 'mobx';
 class AppData {
     searchStr = '';
 
+    nationality = '';
+
     constructor() {
         makeAutoObservable(this);
     }
 
     setSearch(str: string) {
         this.searchStr = str;
+    }
+
+    setNationality(str: string) {
+        this.nationality = str;
     }
 }
 export default new AppData();
