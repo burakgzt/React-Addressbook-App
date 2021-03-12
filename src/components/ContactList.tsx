@@ -2,10 +2,12 @@ import React from 'react';
 import {
     List, Button, Skeleton, Card, Avatar,
 } from 'antd';
+import { observer } from 'mobx-react';
 
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroller';
 import { UserOutlined } from '@ant-design/icons';
+import AppData from '../data/AppData';
 
 const { Meta } = Card;
 
@@ -58,6 +60,7 @@ interface ResponseType {
 }
 interface CallbackType { (myArgument: ResponseType): void }
 
+@observer
 export default class ContactList extends React.Component<ComponentProps, ComponentState> {
     dataUrl = '';
 
@@ -113,9 +116,24 @@ export default class ContactList extends React.Component<ComponentProps, Compone
         });
     };
 
+    filterList = (list: ListItem[]) => list.filter(
+        (el) => (
+            (!AppData.searchStr)
+            || (`${el.name.first} ${el.name.last}`.search(new RegExp(AppData.searchStr, 'i')) > -1)),
+    );
+
     render() {
         const { loading, list, page } = this.state;
-        const loadMore = (!loading && page <= 20) ? (
+
+        const filteredList = this.filterList(list);
+        const hasMore = !loading && page <= 20 && !AppData.searchStr;
+
+        const finishedPage = (!hasMore && page > 20) ? (
+            <p className="pdbottom">
+                End of users catalog
+            </p>
+        ) : null;
+        const loadMore = hasMore ? (
             <div style={{
                 textAlign: 'center',
                 marginTop: 12,
@@ -125,16 +143,20 @@ export default class ContactList extends React.Component<ComponentProps, Compone
             >
                 <Button onClick={this.onLoadMore}>Load More</Button>
             </div>
-        ) : null;
+        ) : finishedPage;
 
         return (
             <InfiniteScroll
                 initialLoad
                 pageStart={0}
                 loadMore={this.onLoadMore}
-                hasMore={!loading && page <= 20}
+                hasMore={hasMore}
                 useWindow
             >
+                <h2>
+                    {AppData.searchStr}
+                </h2>
+                {AppData.searchStr && <Button type="link" onClick={() => AppData.setSearch('')}>Clear Search</Button>}
                 <List
                     grid={{
                         gutter: 16,
@@ -148,7 +170,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
                     className="demo-loadmore-list"
                     itemLayout="horizontal"
                     loadMore={loadMore}
-                    dataSource={list}
+                    dataSource={filteredList}
                     renderItem={(item: ListItem) => (
                         <List.Item>
                             <Skeleton avatar title={false} loading={item.loading} active>
@@ -156,6 +178,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
                                     actions={[
                                         <div>
                                             <UserOutlined style={{ marginRight: 5 }} />
+                                            {AppData.searchStr}
                                             {item.login.username}
                                         </div>,
                                     ]}
