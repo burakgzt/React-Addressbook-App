@@ -17,7 +17,7 @@ I used Eslint and prettier to validate code style.
   After clonning to reposistory enter the project directory and run the following codes in order:
   * npm install
   * npm run
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser (if it doesn't open automatically).
+  * Open [http://localhost:3000](http://localhost:3000) to view it in the browser (if it doesn't open automatically).
 
 To run tests use:
   * npm test
