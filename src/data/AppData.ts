@@ -16,23 +16,23 @@ class AppData {
     }
 
     // Set search value
-    setSearch(str: string) {
+    setSearch(str: string): void {
         this.setSearchInput(str);
         this.searchedStr = str;
     }
 
     // Set input string, used during typing
-    setSearchInput(str: string) {
+    setSearchInput(str: string): void {
         this.searchInputStr = str;
     }
 
     // Reset nationality selection, clear the list
-    clearNationalities() {
+    clearNationalities(): void {
         this.nationality = [];
     }
 
     // On-off nationality selection
-    toggleNationality(str: string) {
+    toggleNationality(str: string): void {
         if (this.nationality.includes(str)) {
             this.nationality = this.nationality.filter((e) => (e !== str));
         } else {
@@ -41,7 +41,7 @@ class AppData {
     }
 
     // Return nationalities as comma seperated string
-    getNationalityStr() {
+    getNationalityStr(): string {
         return this.nationality.join();
     }
 }

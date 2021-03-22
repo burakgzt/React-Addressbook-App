@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import SettingsPage from './pages/SettingsPage';
 import AppDataStore from "./data/AppData"
-import ContactList from './components/ContactList';
+import ContactList from './components/contact-list/ContactList';
 
 window.matchMedia = window.matchMedia || function () {
   return {

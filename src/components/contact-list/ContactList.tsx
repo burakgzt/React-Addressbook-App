@@ -4,14 +4,15 @@ import {
 } from 'antd';
 import { observer } from 'mobx-react';
 
-import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroller';
 import { UserOutlined } from '@ant-design/icons';
-import AppData from '../data/AppData';
+import AppData from '../../data/AppData';
+import ContactListData from '../../data/ContactListData';
 
+import { onLoadMore, filterList, hasMoreRecord } from './ContactListUtils';
 import {
-    ComponentProps, ComponentState, ListItem, CallbackType,
-} from '../interfaces/ContactListInterface';
+    ComponentProps, ComponentState, ListItem,
+} from '../../interfaces/ContactListInterface';
 
 const { Meta } = Card;
 
@@ -22,77 +23,21 @@ export default class ContactList extends React.Component<ComponentProps, Compone
     constructor(props: ComponentProps) {
         super(props);
 
-        this.state = {
-            lastNationality: AppData.getNationalityStr(),
-            loading: true,
-            data: new Array<ListItem>(),
-            list: new Array<ListItem>(),
-            page: 1,
-        };
+        ContactListData.initPage(AppData.getNationalityStr());
     }
 
     componentDidMount() {
-        this.onLoadMore();
+        const { count } = this.props;
+        onLoadMore(count);
     }
 
-    getData = (callback: CallbackType) => {
-        const { count } = this.props;
-        const { page, lastNationality } = this.state;
-        const nat = AppData.getNationalityStr();
-
-        if (nat !== lastNationality) {
-            this.setState({ page: 1, lastNationality: nat });
-            this.getData(callback);
-            return;
-        }
-
-        this.dataUrl = `https://randomuser.me/api/?results=${count}&nat=${nat}&inc=name,gender,email,location,nat,phone,cell,picture,login&page=${page}&seed=burak`;
-
-        axios.get(this.dataUrl)
-            .then((res) => {
-                callback(res.data);
-            });
-    };
-
-    onLoadMore = () => {
-        const { count } = this.props;
-        const newItems = [...new Array(count)].map(() => ({
-            loading: true, name: {}, picture: {}, location: { street: {} }, login: {},
-        } as ListItem));
-        const { data, page } = this.state;
-        this.setState({
-            loading: true,
-            list: data.concat(newItems),
-            page: page + 1,
-        });
-        this.getData((res) => {
-            const newData = data.concat(res.results);
-            this.setState(
-                {
-                    data: newData,
-                    list: newData,
-                    loading: false,
-                },
-                () => {
-                    window.dispatchEvent(new Event('resize'));
-                },
-            );
-        });
-    };
-
-    filterList = (list: ListItem[]) => list.filter(
-        (el) => (
-            (!AppData.searchedStr)
-            || (`${el.name.first} ${el.name.last}`.search(new RegExp(AppData.searchedStr, 'i')) > -1)),
-    );
-
     render() {
-        const { loading, list, page } = this.state;
+        const { count } = this.props;
 
-        const filteredList = this.filterList(list);
-        const hasMore = !loading && page <= 20 && !AppData.searchedStr;
+        const hasMore: boolean = hasMoreRecord();
+        const filteredList = filterList(ContactListData.temporaryList);
 
-        const finishedPage = (!hasMore && page > 20) ? (
+        const finishedPage = (!hasMore && ContactListData.page > 20) ? (
             <p className="pdbottom">
                 End of users catalog
             </p>
@@ -105,7 +50,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
                 lineHeight: '32px',
             }}
             >
-                <Button onClick={this.onLoadMore}>Load More</Button>
+                <Button onClick={() => onLoadMore(count)}>Load More</Button>
             </div>
         ) : finishedPage;
 
@@ -113,7 +58,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
             <InfiniteScroll
                 initialLoad
                 pageStart={0}
-                loadMore={this.onLoadMore}
+                loadMore={() => onLoadMore(count)}
                 hasMore={hasMore}
                 useWindow
             >

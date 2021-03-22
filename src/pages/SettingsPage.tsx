@@ -35,9 +35,9 @@ class SettingsPage extends React.Component<RouteComponentProps> {
                                     Clear Filters
                             {` (${AppData.nationality.length} selected)`}
                                 </Button>
-                                <Button type="primary" onClick={() => history.goBack()} disabled={AppData.nationality.length === 0} className="fabButton">
-                                    Apply Filters
-                                {` (${AppData.nationality.length} selected)`}
+                                <Button type="primary" onClick={() => history.goBack()} className="fabButton">
+                                    Apply
+                                {AppData.nationality.length > 0 ? ` Filters (${AppData.nationality.length} selected)` : ''}
                                 </Button>
                             </div>
 

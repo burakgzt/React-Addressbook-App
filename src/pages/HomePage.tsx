@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
     Input, Layout, Menu, Row, Col,
 } from 'antd';
-import ContactList from '../components/ContactList';
+import ContactList from '../components/contact-list/ContactList';
 import AppData from '../data/AppData';
 
 import { HomePageProps } from '../interfaces/HomePageInterface';
