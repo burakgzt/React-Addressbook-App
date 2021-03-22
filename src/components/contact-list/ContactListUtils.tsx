@@ -36,8 +36,10 @@ const filterList = (list: ListItem[]) => list.filter(
         || (`${el.name.first} ${el.name.last}`.search(new RegExp(AppData.searchedStr, 'i')) > -1)),
 );
 
-const hasMoreRecord: (() => boolean) = () => (!ContactListData.loading
-    && ContactListData.page <= 20
+const hasMoreRecord: ((maxPage: number) => boolean) = (maxPage: number) => (!ContactListData.loading
+    && ContactListData.page <= maxPage
     && !AppData.searchedStr);
 
-export { filterList, onLoadMore, hasMoreRecord };
+export {
+    filterList, onLoadMore, hasMoreRecord, getData,
+};

@@ -1,9 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import SettingsPage from './pages/SettingsPage';
-import AppDataStore from "./data/AppData"
-import ContactList from './components/contact-list/ContactList';
+import SettingsPage from '../pages/SettingsPage';
+import AppDataStore from "../data/AppData"
 
 window.matchMedia = window.matchMedia || function () {
   return {
@@ -12,20 +11,6 @@ window.matchMedia = window.matchMedia || function () {
     removeListener: function () { }
   };
 };
-
-
-test('check app data search store', () => {
-  AppDataStore.setSearch("person");
-  expect(AppDataStore.searchedStr).toBe("person");
-});
-
-test('check search state', () => {
-  AppDataStore.setSearch("searchtest");
-  const { container } = render(<ContactList count={50} />)
-
-  const searchStatusElement = screen.getByText(/searchtest/i);
-  expect(searchStatusElement).toBeInTheDocument();
-});
 
 test('check settings page nationality render', () => {
   const { container } = render(<BrowserRouter><SettingsPage count={50} /></BrowserRouter>)

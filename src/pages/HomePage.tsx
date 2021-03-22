@@ -48,7 +48,7 @@ class HomePage extends React.Component<HomePageProps> {
                     </Row>
                 </Header>
                 <div className="pageContent">
-                    <ContactList count={50} />
+                    <ContactList count={50} maxPage={20} />
                 </div>
             </div>
 

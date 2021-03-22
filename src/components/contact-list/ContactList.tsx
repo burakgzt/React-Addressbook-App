@@ -32,9 +32,9 @@ export default class ContactList extends React.Component<ComponentProps, Compone
     }
 
     render() {
-        const { count } = this.props;
+        const { count, maxPage } = this.props;
 
-        const hasMore: boolean = hasMoreRecord();
+        const hasMore: boolean = hasMoreRecord(maxPage);
         const filteredList = filterList(ContactListData.temporaryList);
 
         const finishedPage = (!hasMore && ContactListData.page > 20) ? (

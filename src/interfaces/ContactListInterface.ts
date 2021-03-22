@@ -1,5 +1,6 @@
 export interface ComponentProps {
     count: number,
+    maxPage: number,
     style?: object
 }
 
