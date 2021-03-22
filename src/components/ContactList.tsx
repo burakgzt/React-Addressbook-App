@@ -9,68 +9,17 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { UserOutlined } from '@ant-design/icons';
 import AppData from '../data/AppData';
 
+import {
+    ComponentProps, ComponentState, ListItem, CallbackType,
+} from '../interfaces/ContactListInterface';
+
 const { Meta } = Card;
-
-interface ComponentProps {
-    count: number,
-    style?: any
-}
-
-interface ComponentState {
-    list: ListItem[];
-    loading: boolean;
-    data: ListItem[];
-    page: number;
-    lastNationality: string;
-}
-
-interface ListItem {
-    loading: boolean;
-    popoverVisible: boolean;
-    name: {
-        title: string;
-        first: string;
-        last: string;
-    };
-    login: {
-        username: string;
-        uuid: string;
-    },
-    email: string;
-    nat: string;
-    picture: {
-        large: string;
-        medium: string;
-        thumbnail: string;
-    },
-    location: {
-        street: {
-            number: number;
-            name: string;
-        },
-        city: string,
-        state: string,
-        country: string,
-        postcode: string,
-        coordinates: {
-            latitude: number,
-            longitude: number
-        }
-    },
-    phone: string,
-    cell: string,
-    gender: string
-}
-interface ResponseType {
-    results: ListItem[];
-}
-interface CallbackType { (myArgument: ResponseType): void }
 
 @observer
 export default class ContactList extends React.Component<ComponentProps, ComponentState> {
     dataUrl = '';
 
-    constructor(props: any) {
+    constructor(props: ComponentProps) {
         super(props);
 
         this.state = {
