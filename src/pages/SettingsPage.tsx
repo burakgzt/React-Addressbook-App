@@ -1,14 +1,12 @@
 import React from 'react';
+import { Observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
-import { PageHeader, List, Avatar } from 'antd';
+import {
+    PageHeader, List, Avatar, Button,
+} from 'antd';
 import AppData from '../data/AppData';
 
 const nationalities = ['AU', 'BR', 'CA', 'CH', 'DE', 'DK', 'ES', 'FI', 'FR', 'GB', 'IE', 'IR', 'NO', 'NL', 'NZ', 'TR', 'US'];
-
-function goBack(history: any, item: string) {
-    AppData.setNationality(item);
-    history.goBack();
-}
 
 function SettingsPage({ history }: any) {
     return (
@@ -21,18 +19,43 @@ function SettingsPage({ history }: any) {
             />
 
             <div className="pageContent">
+                <Observer>
+                    {() => (
+
+                        <div>
+                            <Button type="link" onClick={() => AppData.clearNationalities()} disabled={AppData.nationality.length === 0}>
+                                Clear Filters
+                            {` (${AppData.nationality.length} selected)`}
+                            </Button>
+                            <Button type="primary" onClick={() => history.goBack()} disabled={AppData.nationality.length === 0} className="fabButton">
+                                Apply Filters
+                                {` (${AppData.nationality.length} selected)`}
+                            </Button>
+                        </div>
+
+                    )}
+                </Observer>
+
                 <List
                     itemLayout="horizontal"
                     dataSource={nationalities}
                     renderItem={(item) => (
-                        <List.Item onClick={() => goBack(history, item)} className="nationalityItem">
-                            <List.Item.Meta
-                                avatar={<Avatar src={`https://www.countryflags.io/${item}/flat/64.png`} />}
-                                title={<div className="leftItem">{item}</div>}
-                            />
-                        </List.Item>
+                        <Observer>
+                            {() => (
+                                <List.Item
+                                    onClick={() => AppData.toggleNationality(item)}
+                                    className={AppData.nationality.includes(item) ? 'selectedNat nationalityItem' : 'nationalityItem'}
+                                >
+                                    <List.Item.Meta
+                                        avatar={<Avatar src={`https://www.countryflags.io/${item}/flat/64.png`} className="flagIcon" />}
+                                        title={<div className="leftItem">{item}</div>}
+                                    />
+                                </List.Item>
+                            )}
+                        </Observer>
                     )}
                 />
+
             </div>
         </div>
     );

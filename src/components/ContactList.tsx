@@ -74,7 +74,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
         super(props);
 
         this.state = {
-            lastNationality: AppData.nationality,
+            lastNationality: AppData.getNationalityStr(),
             loading: true,
             data: new Array<ListItem>(),
             list: new Array<ListItem>(),
@@ -89,7 +89,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
     getData = (callback: CallbackType) => {
         const { count } = this.props;
         const { page, lastNationality } = this.state;
-        const nat = AppData.nationality;
+        const nat = AppData.getNationalityStr();
 
         if (nat !== lastNationality) {
             this.setState({ page: 1, lastNationality: nat });
