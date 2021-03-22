@@ -133,15 +133,15 @@ export default class ContactList extends React.Component<ComponentProps, Compone
 
     filterList = (list: ListItem[]) => list.filter(
         (el) => (
-            (!AppData.searchStr)
-            || (`${el.name.first} ${el.name.last}`.search(new RegExp(AppData.searchStr, 'i')) > -1)),
+            (!AppData.searchedStr)
+            || (`${el.name.first} ${el.name.last}`.search(new RegExp(AppData.searchedStr, 'i')) > -1)),
     );
 
     render() {
         const { loading, list, page } = this.state;
 
         const filteredList = this.filterList(list);
-        const hasMore = !loading && page <= 20 && !AppData.searchStr;
+        const hasMore = !loading && page <= 20 && !AppData.searchedStr;
 
         const finishedPage = (!hasMore && page > 20) ? (
             <p className="pdbottom">
@@ -169,9 +169,9 @@ export default class ContactList extends React.Component<ComponentProps, Compone
                 useWindow
             >
                 <h2>
-                    {AppData.searchStr}
+                    {AppData.searchedStr}
                 </h2>
-                {AppData.searchStr && <Button type="link" onClick={() => AppData.setSearch('')}>Clear Search</Button>}
+                {AppData.searchedStr && <Button type="link" onClick={() => AppData.setSearch('')}>Clear Search</Button>}
                 <List
                     grid={{
                         gutter: 16,
@@ -231,7 +231,7 @@ export default class ContactList extends React.Component<ComponentProps, Compone
                                             actions={[
                                                 <div>
                                                     <UserOutlined style={{ marginRight: 5 }} />
-                                                    {AppData.searchStr}
+                                                    {AppData.searchedStr}
                                                     {item.login.username}
                                                 </div>,
                                             ]}

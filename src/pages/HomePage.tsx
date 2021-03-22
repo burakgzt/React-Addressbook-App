@@ -1,4 +1,5 @@
 import React from 'react';
+import { Observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import {
     Input, Layout, Menu, Row, Col,
@@ -15,7 +16,18 @@ function HomePage() {
             <Header className="PageHeader">
                 <Row>
                     <Col span={12} className="searchContainer">
-                        <Search className="searchBar" placeholder="input search text" enterButton="Search" onSearch={(value) => AppData.setSearch(value)} />
+                        <Observer>
+                            {() => (
+                                <Search
+                                    className="searchBar"
+                                    placeholder="input search text"
+                                    enterButton="Search"
+                                    value={AppData.searchInputStr}
+                                    onChange={(event) => AppData.setSearchInput(event.target.value)}
+                                    onSearch={(value) => AppData.setSearch(value)}
+                                />
+                            )}
+                        </Observer>
                     </Col>
                     <Col span={12}>
                         <Link to="/settings">
